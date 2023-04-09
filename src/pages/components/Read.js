@@ -2,6 +2,7 @@ import React from "react";
 
 function Read() {
   return (
+    <>
       <div className="w-ful h-16 flex items-center px-14 justify-between">
         <h1 className="text-3xl text-black-200 font-semibold font-Montesarrat">
           CRUD
@@ -10,7 +11,7 @@ function Read() {
           Login
         </button>
       </div>
-      
+    </>
   );
 }
 
