@@ -1,49 +1,41 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
+import axios from 'axios';
 
 function Update() {
-  const [userData, setUserData] = useState([]);
-  const [formValues, setFormValues] = useState({
-    id: "",
+  const [formData, setFormData] = useState({
     name: "",
     designation: "",
     image: "",
     about: "",
   });
 
+  function handleForm(val, name) {
+    setFormData({
+      ...formData,
+      [name]: val,
+    });
+  }
+  // console.log("formData:", formData);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-
-        const response = await axios.get(`https://643257813e05ff8b372489a4.mockapi.io/Crud`); // Update the URL and API endpoint as needed
-        setUserData(response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchData();
+    const localStorageData = localStorage.getItem("formData");
+    if (localStorageData) {
+      setFormData(JSON.parse(localStorageData));
+    }
   }, []);
 
-  const handleSelectUser = (userId) => {
-    const selectedUser = userData.find((user) => user.id === userId);
-    setFormValues(selectedUser);
-  };
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value });
-  };
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      await axios.put(`https://643257813e05ff8b372489a4.mockapi.io/Crud/${formValues.id}`, formValues); // Update the URL and API endpoint as needed
-      alert("User data updated successfully!");
+      const res = await axios.post(`https://643257813e05ff8b372489a4.mockapi.io/Crud`, formData);
+      console.log("data created succesfully", res.data);
+      localStorage.removeItem("formData")
     } catch (error) {
-      console.error("Error updating user data:", error);
+      console.log("error creating data", error);
     }
-  };
+  }
+
   return (
     <div className="bg-green-600 h-screen">
       <div className="w-ful h-16 flex items-center px-14 justify-center">
@@ -53,77 +45,75 @@ function Update() {
       </div>
       <div className="container mx-auto mt-10">
         <h1 className="text-3xl font-bold mb-5">Update User</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {userData.map((user) => (
-            <div
-              key={user.id}
-              className={`bg-white rounded-md overflow-hidden shadow-md ${
-                formValues.id === user.id ? "border-2 border-blue-500" : ""
-              }`}
-              onClick={() => handleSelectUser(user.id)}
-            >
-              <img
-                src={user.image}
-                alt={user.name}
-                className="w-full h-40 object-cover"
-              />
-              <div className="p-4">
-                <h2 className="text-xl font-semibold mb-2">{user.name}</h2>
-                <p className="text-gray-600 mb-2">{user.designation}</p>
-                <p className="text-gray-500">{user.about}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-        {formValues.id && (
-          <form className="mt-10" onSubmit={handleSubmit}>
-            <label className="block mb-3">
-              <span className="text-gray-700 font-medium">Name:</span>
-              <input
-                type="text"
-                name="name"
-                value={formValues.name}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-              />
+        <form onSubmit={handleSubmit}>
+          <div className="mb-5">
+            <label htmlFor="name" className="block font-medium mb-1">
+              Name
             </label>
-            <label className="block mb-3">
-              <span className="text-gray-700 font-medium">Designation:</span>
-              <input
-                type="text"
-                name="designation"
-                value={formValues.designation}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-              />
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              className="border border-gray-300 rounded-md px-3 py-2 w-full"
+              placeholder="Enter name"
+              onChange={(e) => handleForm(e.target.value, "name")}
+              required
+            />
+          </div>
+          <div className="mb-5">
+            <label htmlFor="designation" className="block font-medium mb-1">
+              Designation
             </label>
-            <label className="block mb-3">
-              <span className="text-gray-700 font-medium">Image URL:</span>
-              <input
-                type="text"
-                name="image"
-                value={formValues.image}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-              />
+            <input
+              type="text"
+              id="designation"
+              name="designation"
+              className="border border-gray-300 rounded-md px-3 py-2 w-full"
+              placeholder="Enter designation"
+              value={formData.designation}
+              onChange={(e) => handleForm(e.target.value, "designation")}
+              required
+            />
+          </div>
+          <div className="mb-5">
+            <label htmlFor="image" className="block font-medium mb-1">
+              Image
             </label>
-            <label className="block mb-3">
-              <span className="text-gray-700 font-medium">About:</span>
-              <textarea
-                name="about"
-                value={formValues.about}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-              />
+            <input
+              type="file"
+              id="image"
+              name="image"
+              accept="image/*"
+              value={formData.image}
+              className="border border-gray-300 rounded-md px-3 py-2 w-full"
+              onChange={(e) => handleForm(e.target.value, "image")}
+              required
+            />
+          </div>
+          <div className="mb-5">
+            <label htmlFor="about" className="block font-medium mb-1">
+              About
             </label>
-            <button
-              type="submit"
-              className="bg-blue-500 text-white font-medium py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
-            >
-              Update User
-            </button>
-          </form>
-        )}
+            <textarea
+              id="about"
+              name="about"
+              value={formData.about}
+              className="border border-gray-300 rounded-md px-3 py-2 w-full h-32 resize-none"
+              placeholder="Enter about information"
+              onChange={(e) => handleForm(e.target.value, "about")}
+              required
+            />
+          </div>
+          <Link to="/">
+          <button
+            type="submit"
+            className="hover:bg-teal-600hover:border-2 hover:border-white hover:text-green-600 hover:shadow-md rounded-lg bg-black font-bold text-white py-2 px-2"
+          >
+            Update
+          </button>
+          </Link>
+        </form>
       </div>
     </div>
   );

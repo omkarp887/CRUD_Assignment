@@ -94,12 +94,14 @@ function Create() {
               required
             />
           </div>
+          <Link to="/">
           <button
             type="submit"
             className="hover:bg-teal-600hover:border-2 hover:border-white hover:text-green-600 hover:shadow-md rounded-lg bg-black font-bold text-white py-2 px-2"
           >
             Create
           </button>
+          </Link>
         </form>
       </div>
     </div>
