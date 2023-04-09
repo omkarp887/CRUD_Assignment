@@ -29,18 +29,19 @@ function Home() {
 
   const handleDelete = async (userId) => {
     try {
-      await axios.delete(`https://643257813e05ff8b372489a4.mockapi.io/Crud/${userId}`);
+      await axios.delete(
+        `https://643257813e05ff8b372489a4.mockapi.io/Crud/${userId}`
+      );
       console.log("Data deleted successfully");
       // Update userData state by removing the deleted user
-      setUserData(userData.filter(user => user.id !== userId));
+      setUserData(userData.filter((user) => user.id !== userId));
     } catch (error) {
       console.log("Error deleting data", error);
     }
   };
-  
 
   return (
-    <div className="bg-green-600 h-screen">
+    <div className="bg-green-600 fixed top-0 left-0 h-full w-full overflow-auto">
       {/* <Read /> */}
       <div className="w-ful h-16 flex items-center px-14 justify-center">
         <h1 className="text-3xl text-black-200 font-semibold font-Montesarrat">
@@ -57,7 +58,11 @@ function Home() {
         >
           Go to Create Page
         </Link>
-        <Read userData={userData} handleUpdate={handleUpdate} handleDelete={handleDelete} />
+        <Read
+          userData={userData}
+          handleUpdate={handleUpdate}
+          handleDelete={handleDelete}
+        />
       </div>
     </div>
   );

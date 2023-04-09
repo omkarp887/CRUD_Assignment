@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function Create() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     designation: "",
@@ -10,29 +11,19 @@ function Create() {
     about: "",
   });
 
-  const [loadImage, setLoadImage] = useState("");
-
   function handleForm(val, name) {
     setFormData({
       ...formData,
       [name]: val,
     });
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      setLoadImage(reader.result);
-    };
-    reader.readAsDataURL();
   }
   // console.log("formData:", formData);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        `https://643257813e05ff8b372489a4.mockapi.io/Crud`,
-        formData
-      );
+      const res = await axios.post(`https://643257813e05ff8b372489a4.mockapi.io/Crud`,formData)
+      .then((res)=>navigate("/home"))
       console.log("data created succesfully", res.data);
     } catch (error) {
       console.log("error creating data", error);
@@ -78,9 +69,6 @@ function Create() {
             />
           </div>
           <div className="mb-5">
-            <div className="image">
-              {loadImage ? <img src={loadImage} alt="" /> : ""}
-            </div>
             <label htmlFor="image" className="block font-medium mb-1">
               Image
             </label>
@@ -89,7 +77,9 @@ function Create() {
               id="image"
               name="image"
               className="border border-gray-300 rounded-md px-3 py-2 w-full"
-              onChange={(e) => handleForm(e.target.value, "image")}
+              onChange={(e) =>
+                handleForm(e.target.value.split("\\")[2], "image")
+              }
               required
             />
           </div>

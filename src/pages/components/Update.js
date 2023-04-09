@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import axios from 'axios';
+import { Link,useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Update() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     designation: "",
@@ -28,16 +29,17 @@ function Update() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`https://643257813e05ff8b372489a4.mockapi.io/Crud`, formData);
+      const res = await (await axios.post(`https://643257813e05ff8b372489a4.mockapi.io/Crud`, formData))
+      .then((res)=>navigate("/home"))
       console.log("data created succesfully", res.data);
-      localStorage.removeItem("formData")
+      localStorage.removeItem("formData");
     } catch (error) {
       console.log("error creating data", error);
     }
-  }
+  };
 
   return (
-    <div className="bg-green-600 h-screen">
+    <div className="bg-green-600 fixed top-0 left-0 h-full w-full overflow-auto">
       <div className="w-ful h-16 flex items-center px-14 justify-center">
         <h1 className="text-3xl text-black-200 font-semibold font-Montesarrat">
           <Link to="/home">CRUD</Link>
@@ -106,12 +108,12 @@ function Update() {
             />
           </div>
           <Link to="/">
-          <button
-            type="submit"
-            className="hover:bg-teal-600hover:border-2 hover:border-white hover:text-green-600 hover:shadow-md rounded-lg bg-black font-bold text-white py-2 px-2"
-          >
-            Update
-          </button>
+            <button
+              type="submit"
+              className="hover:bg-teal-600hover:border-2 hover:border-white hover:text-green-600 hover:shadow-md rounded-lg bg-black font-bold text-white py-2 px-2"
+            >
+              Update
+            </button>
           </Link>
         </form>
       </div>
