@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function Create() {
@@ -12,18 +12,30 @@ function Create() {
   });
 
   function handleForm(val, name) {
-    setFormData({
-      ...formData,
-      [name]: val,
-    });
+    if (name === "image") {
+      const file = val.target.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        setFormData({
+          ...formData,
+          [name]: reader.result,
+        });
+      };
+    } else
+      setFormData({
+        ...formData,
+        [name]: val,
+      });
   }
   // console.log("formData:", formData);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`https://643257813e05ff8b372489a4.mockapi.io/Crud`,formData)
-      .then((res)=>navigate("/home"))
+      const res = await axios
+        .post(`https://643257813e05ff8b372489a4.mockapi.io/Crud`, formData)
+        .then((res) => navigate("/home"));
       console.log("data created succesfully", res.data);
     } catch (error) {
       console.log("error creating data", error);
@@ -68,6 +80,7 @@ function Create() {
               required
             />
           </div>
+
           <div className="mb-5">
             <label htmlFor="image" className="block font-medium mb-1">
               Image
@@ -76,12 +89,21 @@ function Create() {
               type="file"
               id="image"
               name="image"
+              accept="image/*"
+              className="border border-gray-300 rounded-md px-3 py-2 w-full"
+              required
+              onChange={(e) => handleForm(e, "image")}
+            />
+            {/* <input
+              type="file"
+              id="image"
+              name="image"
               className="border border-gray-300 rounded-md px-3 py-2 w-full"
               onChange={(e) =>
                 handleForm(e.target.value.split("\\")[2], "image")
               }
               required
-            />
+            /> */}
           </div>
           <div className="mb-5">
             <label htmlFor="about" className="block font-medium mb-1">

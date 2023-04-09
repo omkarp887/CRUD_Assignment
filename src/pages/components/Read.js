@@ -18,9 +18,9 @@ function Read({ userData, handleUpdate, handleDelete }) {
             >
               {/* Display User Data */}
               <img
-                src={"./image/" + user.image}
+                src={user.image}
                 alt={user.name}
-                className="w-1/2 h-30 py-2 mx-auto flex rounded-full" 
+                className="w-1/2 h-30 py-2 mx-auto flex rounded-full"
               />
               <div className="p-4">
                 <h2 className="text-xl font-semibold mb-2">{user.name}</h2>

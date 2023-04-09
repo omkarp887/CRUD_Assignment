@@ -24,7 +24,7 @@ function Home() {
   }, []);
 
   const handleUpdate = (userId) => {
-    console.log(`Update user with ID : ${userId}`);
+    localStorage.setItem("userId", userId);
   };
 
   const handleDelete = async (userId) => {

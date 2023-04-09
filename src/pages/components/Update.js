@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function Update() {
@@ -12,10 +12,22 @@ function Update() {
   });
 
   function handleForm(val, name) {
-    setFormData({
-      ...formData,
-      [name]: val,
-    });
+    if (name === "image") {
+      const file = val.target.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        setFormData({
+          ...formData,
+          [name]: reader.result,
+        });
+      };
+    } else {
+      setFormData({
+        ...formData,
+        [name]: val,
+      });
+    }
   }
   // console.log("formData:", formData);
 
@@ -27,10 +39,13 @@ function Update() {
   }, []);
 
   const handleSubmit = async (e) => {
+    console.log("submit");
     e.preventDefault();
     try {
-      const res = await (await axios.post(`https://643257813e05ff8b372489a4.mockapi.io/Crud`, formData))
-      .then((res)=>navigate("/home"))
+      let id = localStorage.getItem("userId");
+      const res = await axios
+        .put(`https://643257813e05ff8b372489a4.mockapi.io/Crud/` + id, formData)
+        .then((res) => navigate("/home"));
       console.log("data created succesfully", res.data);
       localStorage.removeItem("formData");
     } catch (error) {
@@ -87,9 +102,9 @@ function Update() {
               id="image"
               name="image"
               accept="image/*"
-              value={formData.image}
+              // value={formData.image}
               className="border border-gray-300 rounded-md px-3 py-2 w-full"
-              onChange={(e) => handleForm(e.target.value, "image")}
+              onChange={(e) => handleForm(e, "image")}
               required
             />
           </div>
@@ -107,14 +122,13 @@ function Update() {
               required
             />
           </div>
-          <Link to="/">
-            <button
-              type="submit"
-              className="hover:bg-teal-600hover:border-2 hover:border-white hover:text-green-600 hover:shadow-md rounded-lg bg-black font-bold text-white py-2 px-2"
-            >
-              Update
-            </button>
-          </Link>
+
+          <button
+            type="submit"
+            className="hover:bg-teal-600hover:border-2 hover:border-white hover:text-green-600 hover:shadow-md rounded-lg bg-black font-bold text-white py-2 px-2"
+          >
+            Update
+          </button>
         </form>
       </div>
     </div>
