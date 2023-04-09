@@ -16,6 +16,7 @@ function Home() {
       </div>
       <div className="w-[100vw] h-10 justify-center items-center flex mt-8 container mx-auto px-4">
         <h1 className="text-3xl font-bold text-black ">DATA</h1>
+        
       </div>
     </div>
   );
